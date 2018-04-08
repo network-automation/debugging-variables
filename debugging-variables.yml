@@ -1,0 +1,28 @@
+---
+- name: Debugging variables in Ansible
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  vars:
+    var1: value1
+
+  vars_files:
+    - vars_files/var2.yml
+
+  tasks:
+    - include_vars:
+        file: include_vars/var5.yml
+
+    - name: Show the variable values including special variable attributes
+      debug:
+        var: "{{ item }}, {{ item }}.__dict__"
+      with_items: [ var1, var2, var3, var4, var5, var6 ]
+
+    - name: Example of how to access these attributes
+      debug:
+        msg: >
+          Variable 'var1' has the value '{{ var1 }}',
+          as defined on line {{ var1._line_number }},
+          column {{ var1._column_number }} in
+          '{{ var1._data_source }}'.
